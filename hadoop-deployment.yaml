@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: hadoop
+  name: hadoop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: hadoop
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: hadoop
+    spec:
+      containers:
+        - env:
+            - name: AWS_ACCESS_KEY_ID
+              value: minio
+            - name: AWS_SECRET_ACCESS_KEY
+              value: minio123
+          image: prestodb/hive3.1-hive:5
+          name: hadoop-master
+          resources: {}
+          volumeMounts:
+            - mountPath: /opt/hadoop/etc/hadoop/core-site.xml
+              name: hadoop-claim0
+      hostname: hadoop-master
+      restartPolicy: Always
+      volumes:
+        - name: hadoop-claim0
+          persistentVolumeClaim:
+            claimName: hadoop-claim0
+status: {}

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mc-job
+  name: mc-job
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mc-job
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mc-job
+    spec:
+      containers:
+        - command:
+            - /bin/bash
+            - -c
+            - |2
+
+              /usr/bin/mc mb --quiet presto/customer-data-text;
+              /usr/bin/mc mb --quiet presto/customer-data-orc;
+              /usr/bin/mc mirror minio/customer-data-text presto/customer-data-text;
+          env:
+            - name: MC_HOST_presto
+              value: https://minio:minio123@play.min.io
+          image: minio/mc:latest
+          name: mc-job
+          resources: {}
+          volumeMounts:
+            - mountPath: /minio
+              name: mc-job-claim0
+      restartPolicy: Always
+      volumes:
+        - name: mc-job-claim0
+          persistentVolumeClaim:
+            claimName: mc-job-claim0
+status: {}

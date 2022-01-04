@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: presto
+  name: presto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: presto
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Users\ossama\DOCUME~1\MOBAXT~1\home\presto-minio\kompose.exe convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: presto
+    spec:
+      containers:
+        - image: starburstdata/presto:350-e.7
+          name: presto
+          ports:
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/bin/presto
+              name: presto-claim0
+            - mountPath: /usr/lib/presto/etc/catalog/minio.properties
+              name: presto-claim1
+      hostname: presto
+      restartPolicy: Always
+      volumes:
+        - name: presto-claim0
+          persistentVolumeClaim:
+            claimName: presto-claim0
+        - name: presto-claim1
+          persistentVolumeClaim:
+            claimName: presto-claim1
+status: {}
